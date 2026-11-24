@@ -31,6 +31,12 @@
     return [b.slice(0, 1), b.slice(1, 9), b.slice(9)];
   }
 
+  // Same fields in hex, e.g. 0x0 / 0x82 / 0x540000.
+  function fieldsHexText(u) {
+    const f = core.fieldsHex(u);
+    return [f.sign, f.exponent, f.fraction].join(' / ');
+  }
+
   function decimal(n) {
     if (Number.isNaN(n)) return 'NaN';
     if (Object.is(n, -0)) return '-0';
@@ -51,17 +57,6 @@
     return parseInt(s, 2) >>> 0;
   }
 
-  function parseHexFields(parts) {
-    const p = parts.map(x => x.slice(2));
-    const valid = /^[01]$/.test(p[0]) && /^[\da-f]{1,2}$/i.test(p[1]) && /^[\da-f]{1,6}$/i.test(p[2]);
-    if (!valid) throw Error('Hex fields: sign 0/1, exponent 00–FF, fraction 000000–7FFFFF.');
-    const sign = parseInt(p[0], 16);
-    const exponent = parseInt(p[1], 16);
-    const fraction = parseInt(p[2], 16);
-    if (exponent > 255 || fraction > 0x7fffff) throw Error('A field is outside its bit range.');
-    return uint((sign << 31) | (exponent << 23) | fraction);
-  }
-
   function parseBinaryFields(parts) {
     const valid = /^[01]$/.test(parts[0]) && /^[01]{8}$/.test(parts[1]) && /^[01]{23}$/.test(parts[2]);
     if (!valid) throw Error('Binary fields must have 1, 8 and 23 bits, respectively.');
@@ -70,7 +65,7 @@
 
   function parseFieldParts(parts) {
     const allHex = parts.every(x => /^0x/i.test(x));
-    return allHex ? parseHexFields(parts) : parseBinaryFields(parts);
+    return allHex ? core.parseFieldsHex(parts) : parseBinaryFields(parts);
   }
 
   // ---------- Reusable value input ----------
@@ -105,7 +100,8 @@
       </div>
       <p class="error" data-role="error" role="alert"></p>
       <p class="smallnote">Class: <strong data-role="class"></strong>
-        &middot; S/E/M: <span data-role="sem"></span></p>`;
+        &middot; S/E/M: <span data-role="sem"></span>
+        &middot; hex: <span data-role="semHex"></span></p>`;
   }
 
   /**
@@ -151,6 +147,7 @@
     function showClass() {
       part('class').textContent = core.classify(word);
       part('sem').textContent = fields(word).join(' / ');
+      part('semHex').textContent = fieldsHexText(word);
     }
 
     function update() {
@@ -299,6 +296,7 @@
     $('outHex').textContent = hex(word);
     $('outBinary').textContent = binary(word);
     $('outFields').textContent = fields(word).join(' / ');
+    $('outFieldsHex').textContent = fieldsHexText(word);
     $('outExponent').textContent = exponentText(e);
     $('rawWord').textContent = hex(word);
     $('typeValue').textContent = kind;
@@ -306,6 +304,7 @@
     $('operandA').textContent = decimal(floatOf(word));
     $('operandAClass').textContent = kind;
     $('operandAFields').textContent = fields(word).join(' / ');
+    $('operandAFieldsHex').textContent = fieldsHexText(word);
     displayEquation(explain(word));
     const nb = core.neighbors(word);
     $('exactDecimal').textContent = core.exactDecimal(word);
@@ -334,6 +333,7 @@
       $('resultClass').textContent = core.classify(u);
       $('resultBinary').textContent = binary(u);
       $('resultFields').textContent = fields(u).join(' / ');
+      $('resultFieldsHex').textContent = fieldsHexText(u);
       $('roundTrace').textContent = roundingText(result);
       $('calcError').textContent = '';
       $('calcResult').hidden = false;
@@ -346,7 +346,7 @@
   function copyEncoding() {
     const word = inputA.getWord();
     return `Decimal: ${decimal(floatOf(word))}\nHex: ${hex(word)}\nBinary: ${binary(word)}\n` +
-      `S/E/M: ${fields(word).join(' / ')}\nType: ${core.classify(word)}`;
+      `S/E/M: ${fields(word).join(' / ')}\nS/E/M hex: ${fieldsHexText(word)}\nType: ${core.classify(word)}`;
   }
 
   async function onCopy() {

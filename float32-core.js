@@ -197,6 +197,29 @@ function exactDecimal(bits) {
   return (a.sign ? '-' : '') + whole + (frac ? '.' + frac : '');
 }
 
+// Sign, exponent and fraction as 0x-prefixed upper-case hex (1, 2 and 6 digits).
+function fieldsHex(bits) {
+  bits = uint(bits);
+  const hex = (value, digits) => '0x' + value.toString(16).toUpperCase().padStart(digits, '0');
+  return {
+    sign: hex(bits >>> 31, 1),
+    exponent: hex((bits >>> 23) & 255, 2),
+    fraction: hex(bits & FRAC_MASK, 6)
+  };
+}
+
+// Inverse of fieldsHex: takes ['0x0', '0x82', '0x540000'] style parts and returns the word.
+function parseFieldsHex(parts) {
+  const p = parts.map(x => x.slice(2));
+  const valid = /^[01]$/.test(p[0]) && /^[\da-f]{1,2}$/i.test(p[1]) && /^[\da-f]{1,6}$/i.test(p[2]);
+  if (!valid) throw Error('Hex fields: sign 0/1, exponent 00–FF, fraction 000000–7FFFFF.');
+  const sign = parseInt(p[0], 16);
+  const exponent = parseInt(p[1], 16);
+  const fraction = parseInt(p[2], 16);
+  if (exponent > 255 || fraction > FRAC_MASK) throw Error('A field is outside its bit range.');
+  return uint((sign << 31) | (exponent << 23) | fraction);
+}
+
 function nextUp(bits) {
   bits = uint(bits);
   if (classify(bits) === 'NaN' || bits === 0x7f800000) return bits;
@@ -220,7 +243,7 @@ function neighbors(bits) {
   return {lower, upper, ulp: Number.isFinite(step) && step > 0 ? step : null};
 }
 
-const api = {classify,unpack,parseDecimal,operate,exactDecimal,nextUp,nextDown,neighbors};
+const api = {classify,unpack,fieldsHex,parseFieldsHex,parseDecimal,operate,exactDecimal,nextUp,nextDown,neighbors};
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
 root.Float32Core = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

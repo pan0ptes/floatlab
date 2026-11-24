@@ -42,3 +42,24 @@ test('random binary32 differential arithmetic, 30,000 operand pairs',()=>{
     }
   }
 });
+
+test('fieldsHex formats sign, exponent and fraction',()=>{
+  assert.deepEqual(core.fieldsHex(0x41540000),{sign:'0x0',exponent:'0x82',fraction:'0x540000'});
+  assert.deepEqual(core.fieldsHex(0x80000001),{sign:'0x1',exponent:'0x00',fraction:'0x000001'});
+  assert.deepEqual(core.fieldsHex(0xff800000),{sign:'0x1',exponent:'0xFF',fraction:'0x000000'});
+});
+
+test('fieldsHex round-trips through the S/E/M hex parser',()=>{
+  let seed=0x2468ace1;
+  const rand=()=>seed=(Math.imul(seed,1664525)+1013904223)>>>0;
+  for(const word of [0,0x80000000,1,0x41540000,0x7f800000,0x7fc00000,0xffffffff])
+    assert.equal(roundTrip(word),word);
+  for(let i=0;i<10000;i++){const w=rand();assert.equal(roundTrip(w),w);}
+  assert.throws(()=>core.parseFieldsHex(['0x2','0x00','0x000000']));
+  assert.throws(()=>core.parseFieldsHex(['0x0','0x100','0x000000']));
+  assert.throws(()=>core.parseFieldsHex(['0x0','0x00','0x800000']));
+});
+function roundTrip(word){
+  const f=core.fieldsHex(word);
+  return core.parseFieldsHex([f.sign,f.exponent,f.fraction]);
+}
