@@ -9,10 +9,11 @@
 <script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};</script>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 <link rel="stylesheet" href="styles.css">
+<script src="float32-core.js" defer></script>
 </head>
 <body>
 <div class="site">
- <div class="utility"><div>FloatLab / IEEE 754-1985</div><div>UPDATED: <time id="updatedDate" aria-label="Current date">--/--/----</time></div></div>
+ <div class="utility"><div>FloatLab / IEEE 754-1985</div><div>VERSION: <strong>ALPHA v0.1</strong></div></div>
  <header class="masthead"><table role="presentation"><tr><td style="width:84px"><span class="brandicon">ƒ</span></td><td><h1>FloatLab<small>IEEE 754 FLOATING-POINT UTILITY</small></h1></td><td class="logo-splash"><strong>32-BIT</strong>IEEE 754<br>CONVERTER<br></td></tr></table></header>
  <div class="marquee"><marquee scrollamount="3" behavior="scroll">★ WELCOME TO FLOATLAB ★ CONVERT DECIMAL, BINARY &amp; HEX! ★ CLICK THE BITS TO CHANGE VALUES! ★ TRY THE FLOATING-POINT CALCULATOR! ★ 100% JAVASCRIPT! ★</marquee></div>
  <table class="main-table" role="presentation"><tr>
@@ -23,7 +24,7 @@
    <a class="nav-item" href="#bit-editor">&gt;&gt; BIT EDITOR</a>
    <a class="nav-item" href="#calculator">&gt;&gt; CALCULATOR</a>
    <a class="nav-item" href="#help">&gt;&gt; HELP / FAQ</a>
-   <div class="sidebox"><b>SITE VISITS</b><br><span class="counter" id="visitorCount" aria-live="polite">------</span><div class="smallprint" id="counterStatus">Connecting...</div></div>
+   <div class="sidebox"><b>ROUNDING MODE</b><br>NEAREST VALUE<br>TIES TO EVEN</div>
    <div class="sidebox"><span class="newflag blink">* * NEW * *</span><br><b>IEEE 754-1985</b><br>FULL 32-BIT SUPPORT<br>DEC / BIN / HEX</div>
    <div class="badges"><span class="pixel-badge">MADE WITH<br><b>HTML + JS</b></span><span class="pixel-badge">FLOATING<br><b>POINT RULES!</b></span></div>
    
@@ -45,6 +46,10 @@
    <div class="kv"><span class="k">BINARY (32)</span><span class="v" id="outBinary">01000001010101000000000000000000</span></div>
    <div class="kv"><span class="k">S / E / M</span><span class="v" id="outFields">0 / 10000010 / 10101000000000000000000</span></div>
    <div class="kv"><span class="k">ACTUAL EXP.</span><span class="v" id="outExponent">3</span></div>
+   <div class="kv"><span class="k">EXACT DECIMAL</span><span class="v exact-value" id="exactDecimal">13.25</span></div>
+   <div class="kv"><span class="k">NEXT BELOW</span><span class="v" id="nextDown">0x4153FFFF</span></div>
+   <div class="kv"><span class="k">NEXT ABOVE</span><span class="v" id="nextUp">0x41540001</span></div>
+   <div class="kv"><span class="k">ULP (UPWARD STEP)</span><span class="v" id="ulpValue">0.00000095367431640625</span></div>
    <div class="swaprow"><span class="smallnote">RAW WORD: <strong id="rawWord">0x41540000</strong></span><button class="btn" type="button" id="copyBtn">COPY RESULTS</button></div>
   </div></section>
   <section class="module" id="bit-editor"><div class="modulehead">03 :: 32-BIT INTERACTIVE EDITOR <em>CLICK A BIT!</em></div><div class="modulebody">
@@ -58,7 +63,7 @@
    <p class="introline">Operand A uses the converter value. Operand B accepts a decimal number.</p>
    <div class="calcrow"><div><label class="formlabel">OPERAND A</label><div class="txt" id="operandA">13.25</div></div><div><label class="formlabel" for="operator">OPERATION</label><select class="select" id="operator"><option value="+">+ Add</option><option value="-">- Subtract</option><option value="*">× Multiply</option></select></div><div><label class="formlabel" for="operandB">OPERAND B</label><input class="txt" id="operandB" value="2.5" spellcheck="false"></div></div>
    <p class="error" id="calcError" role="alert"></p><div class="swaprow"><span class="smallnote">Computed and rounded as 32-bit float.</span><button class="btn btn-primary" id="calculate" type="button">= CALCULATE</button></div>
-   <div class="result" id="calcResult"><div class="smallnote">&gt; RESULT (SINGLE PRECISION):</div><div class="big" id="resultDecimal">15.75</div><div class="results"><div class="resulttile"><span>HEX</span><strong id="resultHex">0x417C0000</strong></div><div class="resulttile"><span>TYPE</span><strong id="resultClass">Normalized</strong></div><div class="resulttile" style="grid-column:1/-1"><span>BINARY WORD</span><strong id="resultBinary">01000001011111000000000000000000</strong></div><div class="resulttile" style="grid-column:1/-1"><span>SIGN / EXPONENT / MANTISSA</span><strong id="resultFields">0 / 10000010 / 11111000000000000000000</strong></div></div></div>
+   <div class="result" id="calcResult"><div class="smallnote">&gt; RESULT (SINGLE PRECISION):</div><div class="big" id="resultDecimal">15.75</div><div class="rounding-info" id="roundTrace" aria-live="polite"></div><div class="results"><div class="resulttile"><span>HEX</span><strong id="resultHex">0x417C0000</strong></div><div class="resulttile"><span>TYPE</span><strong id="resultClass">Normalized</strong></div><div class="resulttile" style="grid-column:1/-1"><span>BINARY WORD</span><strong id="resultBinary">01000001011111000000000000000000</strong></div><div class="resulttile" style="grid-column:1/-1"><span>SIGN / EXPONENT / MANTISSA</span><strong id="resultFields">0 / 10000010 / 11111000000000000000000</strong></div></div></div>
   </div></section>
   <section class="module guide" id="help"><div class="modulehead">05 :: HELP DESK &amp; IEEE 754 REFERENCE <em>FAQ</em></div><div class="modulebody">
    <p>Having trouble? Click a question to read the answer.</p>
@@ -66,7 +71,7 @@
    <details><summary>What is a normalized number?</summary><p>For a normalized number, the exponent field is 1 through 254. Binary32 stores an implicit leading 1 in its significand.</p><div class="math-ref">\[x=(-1)^s\left(1+\frac{F}{2^{23}}\right)2^{E-127}\]</div></details>
    <details><summary>What is a denormalized (subnormal) number?</summary><p>Exponent field zero and nonzero fraction: the significand starts with 0, and exponent is -126.</p><div class="math-ref">\[x=(-1)^s\left(\frac{F}{2^{23}}\right)2^{-126}\]</div></details>
    <details><summary>What are NaN, zero, and infinity?</summary><p>Exponent 255 and nonzero fraction: NaN. Exponent 255 and zero fraction: signed infinity. Exponent and fraction both zero: positive or negative zero.</p></details>
-   <details><summary>Why is 0.1 not exact?</summary><p>Many decimals cannot be represented exactly in binary. FloatLab uses browser float32 conversion and rounds results to single precision. The arithmetic implementation is a prototype and is not a full software IEEE 754 rounding emulator.</p></details>
+   <details><summary>Why is 0.1 not exact?</summary><p>Many decimals do not have finite binary representations. FloatLab parses decimal text as an exact rational number and rounds once to binary32 using round-to-nearest, ties-to-even. Addition, subtraction, and multiplication operate on integer significands and binary exponents, with guard/round/sticky information shown below the result. Directed rounding modes and exception flags are outside the project scope.</p></details>
   </div></section>
   <p class="smallprint" style="text-align:center">★ THANK YOU FOR VISITING FLOATLAB ONLINE! ★ &nbsp; <a href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">BACK TO TOP</a></p>
  </td></tr></table>
