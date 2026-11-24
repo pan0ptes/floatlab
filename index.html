@@ -14,10 +14,10 @@
 <body>
 <div class="site">
  <div class="utility"><div>FloatLab / IEEE 754-1985</div><div>VERSION: <strong>ALPHA v0.1</strong></div></div>
- <header class="masthead"><table role="presentation"><tr><td style="width:84px"><span class="brandicon">ƒ</span></td><td><h1>FloatLab<small>IEEE 754 FLOATING-POINT UTILITY</small></h1></td><td class="logo-splash"><strong>32-BIT</strong>IEEE 754<br>CONVERTER<br></td></tr></table></header>
- <div class="marquee"><marquee scrollamount="3" behavior="scroll">★ WELCOME TO FLOATLAB ★ CONVERT DECIMAL, BINARY &amp; HEX! ★ CLICK THE BITS TO CHANGE VALUES! ★ TRY THE FLOATING-POINT CALCULATOR! ★ 100% JAVASCRIPT! ★</marquee></div>
- <table class="main-table" role="presentation"><tr>
- <td class="sidebar">
+ <header class="masthead"><div class="masthead-row"><span class="brandicon">ƒ</span><h1 class="masthead-title">FloatLab<small>IEEE 754 FLOATING-POINT UTILITY</small></h1><div class="logo-splash"><strong>32-BIT</strong>IEEE 754<br>CONVERTER<br></div></div></header>
+ <div class="marquee"><span class="marquee-text">★ WELCOME TO FLOATLAB ★ CONVERT DECIMAL, BINARY &amp; HEX! ★ CLICK THE BITS TO CHANGE VALUES! ★ TRY THE FLOATING-POINT CALCULATOR! ★ 100% JAVASCRIPT! ★</span></div>
+ <div class="main-table">
+ <div class="sidebar">
    <div class="nav-title">:: MAIN MENU ::</div>
    <a class="nav-item" href="#converter">&gt;&gt; CONVERTER</a>
    <a class="nav-item" href="#encoding">&gt;&gt; IEEE 754 DATA</a>
@@ -28,8 +28,8 @@
    <div class="sidebox"><span class="newflag blink">* * NEW * *</span><br><b>IEEE 754-1985</b><br>FULL 32-BIT SUPPORT<br>DEC / BIN / HEX</div>
    <div class="badges"><span class="pixel-badge">MADE WITH<br><b>HTML + JS</b></span><span class="pixel-badge">FLOATING<br><b>POINT RULES!</b></span></div>
    
- </td>
- <td class="main-content">
+ </div>
+ <div class="main-content">
   <h2 class="welcome">Welcome to FloatLab <span class="newflag">[ NEW! ]</span></h2>
   <p>Free online IEEE 754 single-precision converter &amp; calculator. Enter a number below, click bits to modify its encoding, or perform arithmetic with two values.</p>
   <div class="old-rule"></div>
@@ -73,7 +73,7 @@
    <details><summary>Why is 0.1 not exact?</summary><p>Many decimals do not have finite binary representations. FloatLab parses decimal text as an exact rational number and rounds once to binary32 using round-to-nearest, ties-to-even. Addition, subtraction, and multiplication operate on integer significands and binary exponents, with guard/round/sticky information shown below the result. Directed rounding modes and exception flags are outside the project scope.</p></details>
   </div></section>
   <p class="smallprint" style="text-align:center">★ THANK YOU FOR VISITING FLOATLAB ONLINE! ★ &nbsp; <a href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">BACK TO TOP</a></p>
- </td></tr></table>
+ </div></div>
  <footer class="footer"><div>FloatLab &copy; <span id="copyrightYear">2026</span> &nbsp; | &nbsp; IEEE 754-1985</div><div class="team-credit">Designed &amp; developed by <strong>Team Half-Bytes</strong> &middot; University of Houston–Clear Lake</div></footer>
 </div>
 
