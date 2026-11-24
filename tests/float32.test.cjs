@@ -63,3 +63,55 @@ function roundTrip(word){
   const f=core.fieldsHex(word);
   return core.parseFieldsHex([f.sign,f.exponent,f.fraction]);
 }
+
+// Targeted generators for cases uniform random words rarely reach.
+let seed=0xdeadbeef;
+const ri=n=>(seed=(Math.imul(seed,1664525)+1013904223)>>>0)%n;
+const word=(s,e,m)=>((s<<31)|(e<<23)|m)>>>0;
+const M=()=>ri(0x800000);
+const gens={
+  cancellation:()=>{const e=1+ri(253),s=ri(2);return [word(s,e,M()),word(s^1,e+ri(2),M())];},
+  subnormal:()=>[word(ri(2),ri(2),M()),word(ri(2),ri(2),M())],
+  mulUnderflow:()=>[word(ri(2),1+ri(60),M()),word(ri(2),60+ri(60),M())],
+  nearMax:()=>[word(ri(2),200+ri(55),M()),word(ri(2),200+ri(55),M())],
+  ties:()=>{const mk=()=>word(ri(2),100+ri(60),(ri(4)<<21)|(ri(2)<<ri(23)));return [mk(),mk()];},
+  expGap:()=>{const e=60+ri(100),g=22+ri(6);return [word(0,e,M()),word(0,e-g,M())];},
+};
+function checkAgainstFround(x,y){
+  for(const op of ['+','-','*']){
+    const a=floatOf(x),b=floatOf(y);
+    const r=op==='+'?a+b:op==='-'?a-b:a*b;
+    const got=core.operate(x,y,op).bits;
+    if(Number.isNaN(r))assert.equal(core.classify(got),'NaN');
+    else assert.equal(got,bitsOf(Math.fround(r)),`${op} 0x${x.toString(16)} 0x${y.toString(16)}`);
+  }
+}
+for(const [name,gen] of Object.entries(gens)){
+  test(`differential arithmetic: ${name}`,()=>{
+    for(let i=0;i<50000;i++)checkAgainstFround(...gen());
+  });
+}
+
+test('classification of every class',()=>{
+  const cases=[
+    [0x41540000,'Normalized'],[0x00800000,'Normalized'],[0x7f7fffff,'Normalized'],[0xc0000000,'Normalized'],
+    [0x00000001,'Denormalized'],[0x007fffff,'Denormalized'],[0x80000001,'Denormalized'],
+    [0x00000000,'Zero'],[0x80000000,'Zero'],
+    [0x7f800000,'Infinity'],[0xff800000,'Infinity'],
+    [0x7fc00000,'NaN'],[0xff800001,'NaN'],[0x7fffffff,'NaN'],
+  ];
+  for(const [bits,kind] of cases)assert.equal(core.classify(bits),kind,'0x'+bits.toString(16));
+});
+
+test('every class works in both operand positions',()=>{
+  const samples=[0x41540000,0x00000001,0x80000000,0x7f800000,0xff800000,0x7fc00000];
+  const seen=new Set();
+  for(const x of samples)for(const y of samples){
+    seen.add(core.classify(x)+'/'+core.classify(y));
+    checkAgainstFround(x,y);
+  }
+  // all 25 ordered class pairs were exercised
+  assert.equal(seen.size,25);
+});
+
+test.todo('exact examples from the course deck (waiting for the slides)');
