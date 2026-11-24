@@ -4,11 +4,11 @@ FloatLab is a browser-based IEEE 754 binary32 converter and calculator developed
 
 ## Features
 
-- Enter a decimal number, 32-bit binary word, 8-digit hexadecimal word, or sign/exponent/fraction fields.
-- Inspect the sign, exponent, and fraction bits and toggle individual bits.
+- Enter a decimal number, 32-bit binary word, 8-digit hexadecimal word, or sign/exponent/fraction fields (binary, or `0x` hex per field). The converter and both calculator operands use the same input component.
+- Inspect the sign, exponent, and fraction bits in binary and in hex (for example `0x0 / 0x82 / 0x540000`), and toggle individual bits.
 - View the decoded value, exact decimal expansion, ULP, neighboring binary32 encodings, classification, and live equation.
-- Add, subtract, and multiply binary32 operands using an integer-significand arithmetic core with round-to-nearest, ties-to-even.
-- Read the built-in help for input formats and IEEE 754 number classes.
+- Add, subtract, and multiply two binary32 operands using an integer-significand arithmetic core with round-to-nearest, ties-to-even. Each operand and the result show their class (normalized, denormalized, zero, infinity, NaN), and the result shows the guard/round/sticky bits.
+- Read the built-in help for input formats, number classes, a worked addition example, and how to read the G/R/S line.
 
 ## Running locally
 
@@ -20,7 +20,7 @@ python -m http.server 8000
 
 Then open `http://localhost:8000/`.
 
-MathJax is loaded from an external service, so mathematical typesetting requires an internet connection. All conversion and arithmetic logic runs locally in the browser.
+MathJax 3.2.2 (`tex-svg.js`, Apache-2.0) is vendored in `vendor/mathjax/`, so the page works offline and from `file://`. All conversion and arithmetic logic runs locally in the browser.
 
 ## Implementation notes
 
@@ -28,7 +28,7 @@ The independent `float32-core.js` module parses decimal inputs into exact ration
 
 ## Tests
 
-Run `node --test tests/float32.test.cjs` from the repository root (Node.js 18 or newer). The suite checks boundary values, ties-to-even, special-value behavior and randomized differential comparisons.
+Run `node --test tests/float32.test.cjs` from the repository root (Node.js 18 or newer). The suite checks boundary values, ties-to-even, special-value behavior, the S/E/M hex helpers, classification of every class, and differential comparisons against `Math.fround` (uniform random plus targeted generators for cancellation, subnormals, multiplication underflow, near-max overflow, exact ties and large exponent gaps).
 
 ## Quick checks
 
