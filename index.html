@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>FloatLab | IEEE 754 Converter</title>
+<meta name="description" content="FloatLab Online: a retro web utility for IEEE 754 floating-point conversion, bit inspection, and arithmetic.">
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="site">
+ <div class="utility"><div>FloatLab / IEEE 754-1985</div><div>UPDATED: <time id="updatedDate" aria-label="Current date">--/--/----</time></div></div>
+ <header class="masthead"><table role="presentation"><tr><td style="width:84px"><span class="brandicon">ƒ</span></td><td><h1>FloatLab<small>IEEE 754 FLOATING-POINT UTILITY</small></h1></td><td class="logo-splash"><strong>32-BIT</strong>IEEE 754<br>CONVERTER<br></td></tr></table></header>
+ <div class="marquee"><marquee scrollamount="3" behavior="scroll">★ WELCOME TO FLOATLAB ★ CONVERT DECIMAL, BINARY &amp; HEX! ★ CLICK THE BITS TO CHANGE VALUES! ★ TRY THE FLOATING-POINT CALCULATOR! ★ 100% JAVASCRIPT! ★</marquee></div>
+ <table class="main-table" role="presentation"><tr>
+ <td class="sidebar">
+   <div class="nav-title">:: MAIN MENU ::</div>
+   <a class="nav-item" href="#converter">&gt;&gt; CONVERTER</a>
+   <a class="nav-item" href="#encoding">&gt;&gt; IEEE 754 DATA</a>
+   <a class="nav-item" href="#bit-editor">&gt;&gt; BIT EDITOR</a>
+   <a class="nav-item" href="#calculator">&gt;&gt; CALCULATOR</a>
+   <a class="nav-item" href="#help">&gt;&gt; HELP / FAQ</a>
+   <div class="sidebox"><b>SITE VISITS</b><br><span class="counter" id="visitorCount" aria-live="polite">------</span><div class="smallprint" id="counterStatus">Connecting...</div></div>
+   <div class="sidebox"><span class="newflag blink">* * NEW * *</span><br><b>IEEE 754-1985</b><br>FULL 32-BIT SUPPORT<br>DEC / BIN / HEX</div>
+   <div class="badges"><span class="pixel-badge">MADE WITH<br><b>HTML + JS</b></span><span class="pixel-badge">FLOATING<br><b>POINT RULES!</b></span></div>
+   
+ </td>
+ <td class="main-content">
+  <h2 class="welcome">Welcome to FloatLab <span class="newflag">[ NEW! ]</span></h2>
+  <p>Free online IEEE 754 single-precision converter &amp; calculator. Enter a number below, click bits to modify its encoding, or perform arithmetic with two values.</p>
+  <div class="old-rule"></div>
+  <section class="module" id="converter"><div class="modulehead">01 :: FLOATING POINT CONVERTER <em>ACTIVE</em></div><div class="modulebody">
+   <p class="introline">Choose your input format:</p>
+   <div class="modebar" aria-label="Input format"><button type="button" class="mode" data-mode="decimal" aria-pressed="true">Decimal</button><button type="button" class="mode" data-mode="hex" aria-pressed="false">Hexadecimal</button><button type="button" class="mode" data-mode="binary" aria-pressed="false">Binary</button><button type="button" class="mode" data-mode="fields" aria-pressed="false">S / E / M</button></div>
+   <div id="single-input"><label class="formlabel" id="inputLabel" for="inputValue">Decimal number</label><input class="txt" id="inputValue" value="13.25" spellcheck="false" autocomplete="off"><p class="hint" id="inputHint">Try 0.1, -0, Infinity, or NaN.</p></div>
+   <div id="fields-input" hidden><label class="formlabel">Sign / Exponent / Mantissa</label><div class="minirow"><input class="txt" id="fieldSign" aria-label="Sign bit" value="0"><input class="txt" id="fieldExp" aria-label="Exponent" value="10000010"><input class="txt" id="fieldFrac" aria-label="Mantissa" value="10101000000000000000000"></div><p class="hint">Binary: 1 / 8 / 23 digits. For hex, prefix each field with 0x.</p></div>
+   <p class="error" id="inputError" role="alert"></p><div class="swaprow"><span class="smallnote">* Results update automatically as you type.</span><button class="btn" id="resetBtn" type="button">RESET VALUE</button></div>
+  </div></section>
+  <section class="module" id="encoding"><div class="modulehead">02 :: IEEE 754 DATA TABLE <em><span id="classBadge">NORMALIZED</span></em></div><div class="modulebody">
+   <div class="kv"><span class="k">DECIMAL</span><span class="v" id="outDecimal">13.25</span></div>
+   <div class="kv"><span class="k">HEX WORD</span><span class="v" id="outHex">0x41540000</span></div>
+   <div class="kv"><span class="k">BINARY (32)</span><span class="v" id="outBinary">01000001010101000000000000000000</span></div>
+   <div class="kv"><span class="k">S / E / M</span><span class="v" id="outFields">0 / 10000010 / 10101000000000000000000</span></div>
+   <div class="kv"><span class="k">ACTUAL EXP.</span><span class="v" id="outExponent">3</span></div>
+   <div class="swaprow"><span class="smallnote">RAW WORD: <strong id="rawWord">0x41540000</strong></span><button class="btn" type="button" id="copyBtn">COPY RESULTS</button></div>
+  </div></section>
+  <section class="module" id="bit-editor"><div class="modulehead">03 :: 32-BIT INTERACTIVE EDITOR <em>CLICK A BIT!</em></div><div class="modulebody">
+   <p class="introline">Modify bits directly to inspect their floating-point effects.</p>
+   <div class="legend"><span><i style="background:#ffe36a"></i> Sign (1)</span><span><i style="background:#87d6ff"></i> Exponent (8)</span><span><i style="background:#b9ebc7"></i> Mantissa (23)</span></div>
+   <div id="bitCanvas" class="bits" aria-label="32 editable IEEE 754 bits"></div>
+   <p class="smallnote">32-bit value &middot; <span id="typeValue">Normalized</span> &middot; exponent field: <span id="biasedValue">130</span></p>
+   <div class="formula"><span class="math-caption">&gt;&gt; LIVE FLOATING POINT EQUATION:</span><div id="formula">\[(-1)^0\left(1+\frac{5505024}{2^{23}}\right)2^3=13.25\]</div></div>
+  </div></section>
+  <section class="module" id="calculator"><div class="modulehead">04 :: BINARY32 CALCULATOR <em>NEW!</em></div><div class="modulebody">
+   <p class="introline">Operand A uses the converter value. Operand B accepts a decimal number.</p>
+   <div class="calcrow"><div><label class="formlabel">OPERAND A</label><div class="txt" id="operandA">13.25</div></div><div><label class="formlabel" for="operator">OPERATION</label><select class="select" id="operator"><option value="+">+ Add</option><option value="-">- Subtract</option><option value="*">× Multiply</option></select></div><div><label class="formlabel" for="operandB">OPERAND B</label><input class="txt" id="operandB" value="2.5" spellcheck="false"></div></div>
+   <p class="error" id="calcError" role="alert"></p><div class="swaprow"><span class="smallnote">Computed and rounded as 32-bit float.</span><button class="btn btn-primary" id="calculate" type="button">= CALCULATE</button></div>
+   <div class="result" id="calcResult"><div class="smallnote">&gt; RESULT (SINGLE PRECISION):</div><div class="big" id="resultDecimal">15.75</div><div class="results"><div class="resulttile"><span>HEX</span><strong id="resultHex">0x417C0000</strong></div><div class="resulttile"><span>TYPE</span><strong id="resultClass">Normalized</strong></div><div class="resulttile" style="grid-column:1/-1"><span>BINARY WORD</span><strong id="resultBinary">01000001011111000000000000000000</strong></div><div class="resulttile" style="grid-column:1/-1"><span>SIGN / EXPONENT / MANTISSA</span><strong id="resultFields">0 / 10000010 / 11111000000000000000000</strong></div></div></div>
+  </div></section>
+  <section class="module guide" id="help"><div class="modulehead">05 :: HELP DESK &amp; IEEE 754 REFERENCE <em>FAQ</em></div><div class="modulebody">
+   <p>Having trouble? Click a question to read the answer.</p>
+   <details><summary>How do I enter a decimal, hex, binary, or S/E/M value?</summary><p>Decimal accepts values such as 345.26, -0, Infinity, and NaN. Hex is exactly eight digits (e.g. 3F9E147B). Binary is 32 bits. For S/E/M, enter 1 sign bit, 8 exponent bits, and 23 mantissa bits. You can also prefix all S/E/M fields with 0x for hexadecimal input.</p></details>
+   <details><summary>What is a normalized number?</summary><p>For a normalized number, the exponent field is 1 through 254. Binary32 stores an implicit leading 1 in its significand.</p><div class="math-ref">\[x=(-1)^s\left(1+\frac{F}{2^{23}}\right)2^{E-127}\]</div></details>
+   <details><summary>What is a denormalized (subnormal) number?</summary><p>Exponent field zero and nonzero fraction: the significand starts with 0, and exponent is -126.</p><div class="math-ref">\[x=(-1)^s\left(\frac{F}{2^{23}}\right)2^{-126}\]</div></details>
+   <details><summary>What are NaN, zero, and infinity?</summary><p>Exponent 255 and nonzero fraction: NaN. Exponent 255 and zero fraction: signed infinity. Exponent and fraction both zero: positive or negative zero.</p></details>
+   <details><summary>Why is 0.1 not exact?</summary><p>Many decimals cannot be represented exactly in binary. FloatLab uses browser float32 conversion and rounds results to single precision. The arithmetic implementation is a prototype and is not a full software IEEE 754 rounding emulator.</p></details>
+  </div></section>
+  <p class="smallprint" style="text-align:center">★ THANK YOU FOR VISITING FLOATLAB ONLINE! ★ &nbsp; <a href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">BACK TO TOP</a></p>
+ </td></tr></table>
+ <footer class="footer"><div>FloatLab &copy; <span id="copyrightYear">2026</span> &nbsp; | &nbsp; IEEE 754-1985</div><div class="team-credit">Designed &amp; developed by <strong>Team Half-Bytes</strong> &middot; University of Houston–Clear Lake</div></footer>
+</div>
+
+<div class="aux-backdrop" id="auxBackdrop" hidden>
+  <section class="aux-window" role="dialog" aria-modal="true" aria-labelledby="auxTitle">
+    <header class="aux-titlebar"><span id="auxTitle">[ #half-bytes ] — TEAM CHANNEL</span><button type="button" class="aux-close" id="auxClose" aria-label="Close chat panel">×</button></header>
+    <p class="aux-message">*** Half-Bytes team channel. Account identification may be required by channel operators.</p>
+    <iframe id="auxFrame" class="aux-frame" title="Team chat client" referrerpolicy="strict-origin-when-cross-origin" allow="clipboard-read; clipboard-write"></iframe>
+    <div class="aux-footer">If the embedded client does not load, <a class="aux-link" href="https://kiwiirc.com/nextclient/irc.libera.chat/#half-bytes" target="_blank" rel="noopener noreferrer">open the client in another tab</a>. <span>Press ESC to exit.</span></div>
+  </section>
+</div>
+
+
+
+<script src="app.js" defer></script>
+</body>
+</html>
