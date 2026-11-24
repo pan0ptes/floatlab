@@ -35,10 +35,8 @@
   <div class="old-rule"></div>
   <section class="module" id="converter"><div class="modulehead">01 :: FLOATING POINT CONVERTER <em>ACTIVE</em></div><div class="modulebody">
    <p class="introline">Choose your input format:</p>
-   <div class="modebar" aria-label="Input format"><button type="button" class="mode" data-mode="decimal" aria-pressed="true">Decimal</button><button type="button" class="mode" data-mode="hex" aria-pressed="false">Hexadecimal</button><button type="button" class="mode" data-mode="binary" aria-pressed="false">Binary</button><button type="button" class="mode" data-mode="fields" aria-pressed="false">S / E / M</button></div>
-   <div id="single-input"><label class="formlabel" id="inputLabel" for="inputValue">Decimal number</label><input class="txt" id="inputValue" value="13.25" spellcheck="false" autocomplete="off"><p class="hint" id="inputHint">Try 0.1, -0, Infinity, or NaN.</p></div>
-   <div id="fields-input" hidden><label class="formlabel">Sign / Exponent / Mantissa</label><div class="minirow"><input class="txt" id="fieldSign" aria-label="Sign bit" value="0"><input class="txt" id="fieldExp" aria-label="Exponent" value="10000010"><input class="txt" id="fieldFrac" aria-label="Mantissa" value="10101000000000000000000"></div><p class="hint">Binary: 1 / 8 / 23 digits. For hex, prefix each field with 0x.</p></div>
-   <p class="error" id="inputError" role="alert"></p><div class="swaprow"><span class="smallnote">* Results update automatically as you type.</span><button class="btn" id="resetBtn" type="button">RESET VALUE</button></div>
+   <div id="inputA"></div>
+   <div class="swaprow"><span class="smallnote">* Results update automatically as you type.</span><button class="btn" id="resetBtn" type="button">RESET VALUE</button></div>
   </div></section>
   <section class="module" id="encoding"><div class="modulehead">02 :: IEEE 754 DATA TABLE <em><span id="classBadge">NORMALIZED</span></em></div><div class="modulebody">
    <div class="kv"><span class="k">DECIMAL</span><span class="v" id="outDecimal">13.25</span></div>
@@ -60,8 +58,8 @@
    <div class="formula"><span class="math-caption">&gt;&gt; LIVE FLOATING POINT EQUATION:</span><div id="formula">\[(-1)^0\left(1+\frac{5505024}{2^{23}}\right)2^3=13.25\]</div></div>
   </div></section>
   <section class="module" id="calculator"><div class="modulehead">04 :: BINARY32 CALCULATOR <em>NEW!</em></div><div class="modulebody">
-   <p class="introline">Operand A uses the converter value. Operand B accepts a decimal number.</p>
-   <div class="calcrow"><div><label class="formlabel">OPERAND A</label><div class="txt" id="operandA">13.25</div></div><div><label class="formlabel" for="operator">OPERATION</label><select class="select" id="operator"><option value="+">+ Add</option><option value="-">- Subtract</option><option value="*">× Multiply</option></select></div><div><label class="formlabel" for="operandB">OPERAND B</label><input class="txt" id="operandB" value="2.5" spellcheck="false"></div></div>
+   <p class="introline">Operand A is the converter value above. Operand B accepts any input format.</p>
+   <div class="calcrow"><div><span class="formlabel">OPERAND A</span><div class="txt" id="operandA">13.25</div><p class="smallnote">Class: <strong id="operandAClass">Normalized</strong> &middot; S/E/M: <span id="operandAFields"></span></p></div><div><label class="formlabel" for="operator">OPERATION</label><select class="select" id="operator"><option value="+">+ Add</option><option value="-">- Subtract</option><option value="*">× Multiply</option></select></div><div><span class="formlabel">OPERAND B</span><div id="inputB"></div></div></div>
    <p class="error" id="calcError" role="alert"></p><div class="swaprow"><span class="smallnote">Computed and rounded as 32-bit float.</span><button class="btn btn-primary" id="calculate" type="button">= CALCULATE</button></div>
    <div class="result" id="calcResult"><div class="smallnote">&gt; RESULT (SINGLE PRECISION):</div><div class="big" id="resultDecimal">15.75</div><div class="rounding-info" id="roundTrace" aria-live="polite"></div><div class="results"><div class="resulttile"><span>HEX</span><strong id="resultHex">0x417C0000</strong></div><div class="resulttile"><span>TYPE</span><strong id="resultClass">Normalized</strong></div><div class="resulttile" style="grid-column:1/-1"><span>BINARY WORD</span><strong id="resultBinary">01000001011111000000000000000000</strong></div><div class="resulttile" style="grid-column:1/-1"><span>SIGN / EXPONENT / MANTISSA</span><strong id="resultFields">0 / 10000010 / 11111000000000000000000</strong></div></div></div>
   </div></section>
